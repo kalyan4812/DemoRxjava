@@ -51,4 +51,9 @@ dependencies {
 
     // Recyclerview
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+
+    def rxbinding_version = "3.0.0-alpha2"
+
+// Rx Binding Library
+    implementation "com.jakewharton.rxbinding3:rxbinding:$rxbinding_version"
 }

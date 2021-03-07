@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recycler_view);
         initRecyclerView();
-        getPostsObservable().subscribeOn(Schedulers.io()).
+        // now i am going through each post and make a network call to commnets for each post(in flatmap)
+       getPostsObservable().subscribeOn(Schedulers.io()).
                 flatMap(new Function<Post, ObservableSource<Post>>() {
                     @Override
                     public ObservableSource<Post> apply(Post post) throws Exception {
@@ -63,6 +64,44 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+      // you can use this piece of code without getpostsObsrevable method.
+  /*      ServiceGenerator.getRequestApi()
+                .getPosts()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Function<List<Post>, ObservableSource<Post>>() {
+                    @Override
+                    public ObservableSource<Post> apply(final List<Post> posts) throws Exception {
+                        adapter.setPosts(posts);
+                        return Observable.fromIterable(posts)
+                                .subscribeOn(Schedulers.io());
+                    }
+                }).flatMap(new Function<Post, ObservableSource<Post>>() {
+            @Override
+            public ObservableSource<Post> apply(Post post) throws Exception {
+                return getCommentsObservable(post);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Post>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+              disposables.add(d);
+            }
+
+            @Override
+            public void onNext(Post post) {
+                  updatePost(post);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });*/
 
 
     }
@@ -95,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     public Post apply(List<Comment> comments) throws Exception {
 
                         int delay = ((new Random()).nextInt(5) + 1) * 1000; // sleep thread for x ms
-                        Thread.sleep(delay);
+                       Thread.sleep(delay);
                         Log.d(TAG, "apply: sleeping thread " + Thread.currentThread().getName() + " for " + String.valueOf(delay) + "ms");
 
                         post.setComments(comments);
